@@ -22,7 +22,7 @@ export interface resData<T> {
     data: T;
     ok: number;
 }
-//列表类型
+//列表泛型
 export interface resListData<T> {
     data: T[];
     ok: number;

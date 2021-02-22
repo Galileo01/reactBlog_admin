@@ -18,8 +18,7 @@ import usePostQuery from './usePostQuery';
 import { deletePostByPid } from '../../network/post';
 
 const PostList: React.FC<pageBaseProps> = ({ setKeysAndPath }) => {
-    const { params, setParams, postList, total ,_postQuery} = usePostQuery();
-
+    const { params, setParams, postList, total, _postQuery } = usePostQuery();
     async function _deletePostByPid(Pid: number) {
         const {
             data: { ok },
@@ -95,7 +94,7 @@ const PostList: React.FC<pageBaseProps> = ({ setKeysAndPath }) => {
                 </Col>
                 <Col span={3}>
                     <Select
-                        defaultValue="all"
+                        value={params.type}
                         onChange={(value) =>
                             setParams({
                                 ...params,

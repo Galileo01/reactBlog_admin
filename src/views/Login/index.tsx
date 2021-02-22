@@ -2,11 +2,14 @@ import React from 'react';
 import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import md5 from 'blueimp-md5';
+import { GETINFO } from '../../redux/constont';
 import { login } from '../../network/user';
 import './index.less';
 
 export default function Login() {
+    const dispatch = useDispatch();
     const [form] = Form.useForm<{ username: string; password: string }>();
     const history = useHistory();
     function finishHandler() {
@@ -18,6 +21,13 @@ export default function Login() {
 
                 if (!ok) return message.error(data);
                 //保存到store
+                dispatch({
+                    type: GETINFO,
+                    payload: {
+                        username,
+                        Uid: data,
+                    },
+                });                
                 message.success('登录成功');
                 history.push('/admin'); //进入管理页面
             })
@@ -37,12 +47,6 @@ export default function Login() {
             >
                 <Form.Item
                     name="username"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Username!',
-                        },
-                    ]}
                 >
                     <Input
                         prefix={
@@ -54,12 +58,6 @@ export default function Login() {
                 </Form.Item>
                 <Form.Item
                     name="password"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Password!',
-                        },
-                    ]}
                 >
                     <Input
                         prefix={

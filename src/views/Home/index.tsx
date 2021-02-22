@@ -6,9 +6,10 @@ import {
     EditOutlined,
     PoweroffOutlined,
 } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
 import './index.less';
 import { adminRouter } from '../../router';
-
+import { REMOVEINFO } from '../../redux/constont';
 const { Content, Sider } = Layout;
 //要显示的菜单列表
 const menuList = adminRouter.filter((item) => item.isShow);
@@ -18,6 +19,8 @@ const menuIcons: { [key: string]: JSX.Element } = {
     '/home/postAdd': <EditOutlined />,
 };
 export default function Home() {
+    const dispatch = useDispatch();
+
     const [collapsed, setCollapsed] = useState(false); //侧边导航是否折叠
 
     const history = useHistory();
@@ -28,7 +31,7 @@ export default function Home() {
 
     function changeKeys({ key, path }: { key: string; path: string }) {
         console.log(key);
-        
+
         history.push(path);
         setKeys([key]);
     }
@@ -42,6 +45,9 @@ export default function Home() {
             onOk() {
                 console.log('OK');
                 history.push('/login');
+                dispatch({
+                    type: REMOVEINFO,
+                });
             },
         });
     }

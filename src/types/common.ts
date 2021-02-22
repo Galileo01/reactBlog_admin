@@ -40,5 +40,6 @@ export type inputRef =
     | null;
 
 export interface pageBaseProps {
-    setKeysAndPath: (params: { key: string ,path: string; }) => void;
+    setKeysAndPath: (params: { key: string; path: string }) => void;
 }
+
