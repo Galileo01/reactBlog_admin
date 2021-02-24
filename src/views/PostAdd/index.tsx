@@ -11,7 +11,7 @@ import {
     Modal,
 } from 'antd';
 import marked from 'marked';
-import { postType ,pageBaseProps} from '../../types/common';
+import { postType, pageBaseProps } from '../../types/common';
 import { addPost } from '../../network/post';
 import useGetPost from './useGetPost';
 import './index.less';
@@ -24,7 +24,7 @@ marked.setOptions({
     smartypants: false,
 });
 
-const PostAdd: React.FC<pageBaseProps> = ({ setKeysAndPath }) => {
+const PostAdd: React.FC<pageBaseProps> = ({ setPath }) => {
     //内容输入模式
     const [mode, setMode] = useState('input');
 
@@ -119,10 +119,7 @@ const PostAdd: React.FC<pageBaseProps> = ({ setKeysAndPath }) => {
         // console.log(data);
         if (ok) {
             message.success('添加成功,将在3s 后跳转到帖子列表').then(() => {
-                setKeysAndPath({
-                    key: '/home/postList',
-                    path: '/home/postList',
-                }); //设置父组件 菜单Keys
+                setPath('/home/postList'); // 跳转 并设置父组件 菜单Keys
             });
         } else message.error('添加失败');
     }

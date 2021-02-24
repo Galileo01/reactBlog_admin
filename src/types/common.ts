@@ -39,7 +39,7 @@ export type inputRef =
     | HTMLTextAreaElement
     | null;
 
+//页面组件 基础 props
 export interface pageBaseProps {
-    setKeysAndPath: (params: { key: string; path: string }) => void;
+    setPath: (key: string) => void;
 }
-

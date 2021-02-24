@@ -17,7 +17,7 @@ import { postType, postItem, pageBaseProps } from '../../types/common';
 import usePostQuery from './usePostQuery';
 import { deletePostByPid } from '../../network/post';
 
-const PostList: React.FC<pageBaseProps> = ({ setKeysAndPath }) => {
+const PostList: React.FC<pageBaseProps> = ({ setPath }) => {
     const { params, setParams, postList, total, _postQuery } = usePostQuery();
     async function _deletePostByPid(Pid: number) {
         const {
@@ -55,10 +55,7 @@ const PostList: React.FC<pageBaseProps> = ({ setKeysAndPath }) => {
                             icon={<EditOutlined />}
                             type="primary"
                             onClick={() => {
-                                setKeysAndPath({
-                                    key: '/home/postEdit',
-                                    path: '/home/postEdit/' + post.Pid,
-                                });
+                                setPath('/home/postEdit/' + post.Pid);
                             }}
                         />
                         <Popconfirm

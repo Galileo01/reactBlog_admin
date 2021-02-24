@@ -12,13 +12,17 @@ export default function Login() {
     const dispatch = useDispatch();
     const [form] = Form.useForm<{ username: string; password: string }>();
     const history = useHistory();
+
     function finishHandler() {
         form.validateFields()
             .then(async ({ password, username }) => {
+                const md5ed = md5(password);
+                const res = await login({ username, password: md5ed });
+                // if()
+                console.log(res);
                 const {
                     data: { ok, data },
-                } = await login({ username, password: md5(password) });
-
+                } = res;
                 if (!ok) return message.error(data);
                 //保存到store
                 dispatch({
@@ -27,14 +31,15 @@ export default function Login() {
                         username,
                         Uid: data,
                     },
-                });                
+                });
+                sessionStorage.setItem('token', md5(md5ed));
                 message.success('登录成功');
-                history.push('/admin'); //进入管理页面
+                history.push('/home'); //进入管理页面
             })
-            .catch((err) => {
-                console.log(err);
-                message.error('出错了');
-            });
+            // .catch((err) => {
+            //     console.log(err);
+            //     message.error('请求出错了');
+            // });
     }
     return (
         <Card className="login_wapper" title="reactBlog系统管理界面" bordered>
@@ -47,6 +52,12 @@ export default function Login() {
             >
                 <Form.Item
                     name="username"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Username!',
+                        },
+                    ]}
                 >
                     <Input
                         prefix={
@@ -58,6 +69,12 @@ export default function Login() {
                 </Form.Item>
                 <Form.Item
                     name="password"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Password!',
+                        },
+                    ]}
                 >
                     <Input
                         prefix={

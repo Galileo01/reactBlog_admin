@@ -1,6 +1,12 @@
-import React, { useState, Suspense } from 'react';
-import { Layout, Menu, Modal } from 'antd';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import React, { useState, Suspense, useEffect } from 'react';
+import { Layout, Menu, Modal,Spin } from 'antd';
+import {
+    Route,
+    Switch,
+    Redirect,
+    useHistory,
+    useLocation,
+} from 'react-router-dom';
 import {
     UnorderedListOutlined,
     EditOutlined,
@@ -10,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import './index.less';
 import { adminRouter } from '../../router';
 import { REMOVEINFO } from '../../redux/constont';
+import Loading from '../../components/Loading';
 const { Content, Sider } = Layout;
 //要显示的菜单列表
 const menuList = adminRouter.filter((item) => item.isShow);
@@ -20,7 +27,7 @@ const menuIcons: { [key: string]: JSX.Element } = {
 };
 export default function Home() {
     const dispatch = useDispatch();
-
+    const token = sessionStorage.getItem('token');
     const [collapsed, setCollapsed] = useState(false); //侧边导航是否折叠
 
     const history = useHistory();
@@ -33,9 +40,18 @@ export default function Home() {
         console.log(key);
 
         history.push(path);
-        setKeys([key]);
+        // setKeys([key]);
+    }
+    function setPath(path: string) {
+        history.push(path);
     }
     // console.log(selectedKeys);
+    const location = useLocation();
+    //监听location.pathname 变化 动态 更新菜单
+    useEffect(() => {
+        console.log('pathname changed', location.pathname);
+        setKeys([location.pathname]);
+    }, [location.pathname]);
 
     function logOutHandler() {
         Modal.confirm({
@@ -50,6 +66,7 @@ export default function Home() {
                 });
             },
         });
+        sessionStorage.clear();//清除所有 对话存储
     }
 
     function mainMenuItemClick(key: React.ReactText) {
@@ -96,20 +113,23 @@ export default function Home() {
                     </Menu>
                 </Sider>
                 <Content style={{ margin: '0 16px' }}>
-                    <Suspense fallback={<span>data is loading</span>}>
+                    <Suspense fallback={<Loading/>}>
                         <Switch>
+                            {/* 未登录 强制重定向 到 登录页面 */}
                             {/* 渲染同时传递 函数props */}
-                            {adminRouter.map((item) => (
-                                <Route
-                                    path={item.path}
-                                    render={() => (
-                                        <item.component
-                                            setKeysAndPath={changeKeys}
-                                        />
-                                    )}
-                                    key={item.path}
-                                />
-                            ))}
+                            {token? (
+                                adminRouter.map((item) => (
+                                    <Route
+                                        path={item.path}
+                                        render={() => (
+                                            <item.component setPath={setPath} />
+                                        )}
+                                        key={item.path}
+                                    />
+                                ))
+                            ) : (
+                                <Redirect to="/login" />
+                            )}
                             <Redirect from="/home" to="/home/postList" />
                         </Switch>
                     </Suspense>

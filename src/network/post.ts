@@ -33,11 +33,13 @@ export function updatePost(info: postItem) {
 
 //条件查询
 export function postQuery(params: postQueryParams) {
-    return axios.get<postQueryRes>('/post/query', {
-        params: {
-            ...params,
-        },
-    });
+    return axios
+        .get<postQueryRes>('/post/query', {
+            params: {
+                ...params,
+            },
+        })
+        // .catch(errHandler);
 }
 
 export function getPostByPid(Pid: number) {
@@ -51,7 +53,7 @@ export function getPostByPid(Pid: number) {
 export function deletePostByPid(Pid: number) {
     return axios.post<{
         ok: number;
-    }>('/post/deleteByPid',{
-        Pid
+    }>('/post/deleteByPid', {
+        Pid,
     });
 }
