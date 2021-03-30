@@ -15,6 +15,7 @@ export interface submitPostItem {
     type: postType;
     keywords: string;
     content: string;
+    Pid?:number
 }
 
 //数据返回类型  泛型

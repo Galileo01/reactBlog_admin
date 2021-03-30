@@ -43,3 +43,6 @@ export type inputRef =
 export interface pageBaseProps {
     setPath: (key: string) => void;
 }
+
+
+//postADdd页面 帖子操作类型

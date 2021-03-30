@@ -27,7 +27,7 @@ export function addPost(info: submitPostItem) {
     return axios.post<postAddRes>('/post/add', info);
 }
 
-export function updatePost(info: postItem) {
+export function updatePost(info: submitPostItem) {
     return axios.post<postAddRes>('/post/update', info);
 }
 
@@ -43,7 +43,7 @@ export function postQuery(params: postQueryParams) {
 }
 
 export function getPostByPid(Pid: number) {
-    return axios.get<postListRes>('/post/getByPid', {
+    return axios.get<resData<postItem>>('/post/getByPid', {
         params: {
             Pid,
         },

@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import marked from 'marked';
 import { postType, pageBaseProps } from '../../types/common';
-import { addPost } from '../../network/post';
+import { addPost, updatePost } from '../../network/post';
 import useGetPost from './useGetPost';
 import './index.less';
 marked.setOptions({
@@ -82,14 +82,15 @@ const PostAdd: React.FC<pageBaseProps> = ({ setPath }) => {
     }
 
     //请求数据 并回调
-    const { postInfo, oprate } = useGetPost(() => {
+    const { postInfo, oprate, Pid } = useGetPost(() => {
         //postInfo 更新就 同步到表单数据
-        if (postInfo) {
-            const { title, desc, content, keywords } = postInfo;
+        if (postInfo) {        
+            const { title, desc, content, keywords,type } = postInfo;
             setContent(content);
             setDesc(desc);
             setWords(keywords);
             setTitle(title);
+            setType(type);
         }
     });
 
@@ -107,21 +108,29 @@ const PostAdd: React.FC<pageBaseProps> = ({ setPath }) => {
     }
     //发送提交请求
     async function submitPost() {
+        const request = oprate === 'add' ? addPost : updatePost; //当前页面操作
+        const text = oprate === 'add' ? '添加' : '编辑';
         const {
             data: { data, ok },
-        } = await addPost({
+        } = await request({
             title,
             type,
             content,
             desc,
             keywords,
+            Pid: +Pid,
         });
         // console.log(data);
         if (ok) {
-            message.success('添加成功,将在3s 后跳转到帖子列表').then(() => {
-                setPath('/home/postList'); // 跳转 并设置父组件 菜单Keys
-            });
-        } else message.error('添加失败');
+            Modal.confirm({
+                title:`${text} 成功,继续${text}还是跳转到帖子列表？`,
+                cancelText:'继续'+text,
+                okText:'跳转到帖子列表',
+                onOk:()=>{
+                    setPath('/home/postList'); // 跳转 并设置父组件 菜单Keys
+                }
+            })
+        } else message.error(text + '失败');
     }
 
     return (
@@ -137,7 +146,7 @@ const PostAdd: React.FC<pageBaseProps> = ({ setPath }) => {
                 </Col>
                 <Col span={2}>
                     <Select
-                        defaultValue={0}
+                        value={type}
                         onChange={(value) => setType(value)}
                     >
                         <Select.Option value={postType.ARTICLE}>

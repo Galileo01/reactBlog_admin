@@ -9,23 +9,22 @@ export default function useGetPost(callback: () => void) {
     const [postInfo, setInfo] = useState<postItem>();
     const [oprate, setOprate] = useState('add');
     const params = useParams<{
-        Pid: string;
+        Pid: string ;
     }>();
-
+    const { Pid } = params;
     async function getPost(Pid: number) {
         const {
             data: { data, ok },
         } = await getPostByPid(Pid);
         if (!ok) return message.error('数据请求失败');
-        setInfo(data[0]);
+        setInfo(data);
     }
     //渲染之后 判断并请求数据
     useEffect(() => {
-        const { Pid } = params;
         // console.log(Pid);
         if (Pid) {
             getPost(+Pid);
-            setOprate('edit');
+            setOprate('edit');//
         }
     }, []);
     //postInfo 更新之后 调用回调函数
@@ -33,5 +32,6 @@ export default function useGetPost(callback: () => void) {
     return {
         postInfo,
         oprate,
+        Pid,
     };
 }
